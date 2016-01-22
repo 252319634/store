@@ -1,0 +1,23 @@
+<div>
+    <img src="{{ MEDIA_URL }}{{ p.image }}" alt=""/>
+    {% for sku in p.goodsku_set.all %}
+        <img src="{{ MEDIA_URL }}{{ sku.image }}" alt=""/>
+    {% endfor %}
+    <br/>商品分类:{{ p.category }}
+    <br/>商品品牌:{{ p.brand }}
+    <br/>商品名称:{{ p.name }}
+    <br/>商品货号:{{ p.artno }}
+    <br/>商品简介:{{ p.desc }}
+    <br/>商品标签:{% for t in p.tag.all %}{{ t }}            {% endfor %}
+    <br/>商品属性:{% for a in p.attrvalue.all %}{{ a.attr.name }}:{{ a.name }}{% endfor %}
+    <br/>商品总销量:{{ p.sales }}
+    <br/>本月销量:{{ p.sales_month }}
+    <br/>
+    <br/>尺寸颜色:<ul>{% for sku in p.goodsku_set.all %}<li>{{ sku.sc }}</li>{% endfor %}</ul>
+    <br/>尺寸:<ul>{% for sku in p.goodsku_set.all %}<li>{{ sku.size }}</li>{% endfor %}</ul>
+    <br/>颜色:<ul>{% for sku in p.goodsku_set.all %}<li>{{ sku.color }}</li>{% endfor %}</ul>
+    <br/>库存:<ul>{% for sku in p.goodsku_set.all %}<li>{{ sku.num }}</li>{% endfor %}</ul>
+    <br/>原价:<ul>{% for sku in p.goodsku_set.all %}<li>{{ sku.old_price }}</li>{% endfor %}</ul>
+    <br/>现价:<ul>{% for sku in p.goodsku_set.all %}<li>{{ sku.new_price  }}</li>{% endfor %}</ul>
+    <button>加入购物车</button>
+</div>
