@@ -2,7 +2,7 @@
 from django import template
 from store import settings
 import datetime
-
+from clothing.models import *
 register = template.Library()
 
 
@@ -19,10 +19,40 @@ def price(id):
     p = GoodSku.objects.filter(good_id=id)[0]
     return p.new_price
 
+@register.filter()
+def size(p):
+    """
+    返回商品的所有sku的尺寸
+    参数是一个商品对象
+    """
+    sizelist = []
+    sizestr = ''
+    for sku in p.goodsku_set.all():
+        if not sku.size.name in sizelist:
+            sizelist.append(sku.size.name)
 
+    for s in sizelist:
+        sizestr += '<li>%s</li>' % s
 
+    return sizestr
 
-from clothing.models import *
+@register.filter()
+def color(p):
+    """
+    返回商品的所有sku的尺寸
+    参数是一个商品对象
+    """
+    colorlist = []
+    colorstr = ''
+    for sku in p.goodsku_set.all():
+        if not sku.color.name in colorlist:
+            colorlist.append(sku.color.name)
+
+    for s in colorlist:
+        colorstr += '<li>%s</li>' % s
+
+    return colorstr
+
 
 
 @register.inclusion_tag('include/product.html')

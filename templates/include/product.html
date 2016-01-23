@@ -16,7 +16,7 @@
         text-align: left;color: red;font-weight: bold;
     }
 </style>
-<a href="{% url 'products' p.id %}">
+<a href="{% url 'products'%}?pid={{p.id}}">
 <div class="product_div">
     <img src="{{ MEDIA_URL }}{{ p.image }}" alt="主图"/>
     <div class="pname" >{{ p.name|slice:'18' }}</div>{% if p.name|length > 18 %}<div style="float: left">...</div>{% endif %}

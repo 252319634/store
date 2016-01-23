@@ -18,7 +18,7 @@
                 {% endfor %}
                 <li>品牌</li>
                 {% for b in BRAND_MAN %}
-                    <li><a href="brand/{{ b.brand }}">{{ b.brand__name }}</a></li>
+                    <li><a href="{% url 'brand' %}?bid={{ b.brand }}">{{ b.brand__name }}</a></li>
                 {% endfor %}
             </ul>
         </li>

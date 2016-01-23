@@ -124,9 +124,12 @@ class Category(models.Model):
 class Brand(models.Model):
     name = models.CharField(max_length=20, verbose_name='品牌')
     index = models.SmallIntegerField(default=1, verbose_name='排序')
+    sex = models.SmallIntegerField(choices=((1, '男式'), (0, '女式')), null=False, default=1, blank=True, verbose_name='性别')
 
     def __str__(self):
-        return self.name
+        str = "男" if self.sex == 1 else "女"
+        return self.name + "---" + str
+
 
     class Meta:
         verbose_name = '品牌'
@@ -164,17 +167,16 @@ class Color(models.Model):
 # 标签
 class Tag(models.Model):
     name = models.CharField(max_length=30, verbose_name='标签')
+    sex = models.SmallIntegerField(choices=((1, '男式'), (0, '女式')), null=False, default=1, blank=True, verbose_name='性别')
 
+    def __str__(self):
+        str = "男" if self.sex == 1 else "女"
+        return self.name + "---" + str
     class Meta:
         verbose_name = '标签'
         verbose_name_plural = verbose_name
 
-    def __str__(self):
-        return self.name
 
-    class Meta:
-        verbose_name = '标签'
-        verbose_name_plural = '标签'
 
 
 class Img(models.Model):
