@@ -1,46 +1,32 @@
 {% extends 'base.html' %}
 {% load staticfiles %}
 {% load extras %}
+{% block cssjs %}
+    <link rel="stylesheet" href="{% static 'css/index.css' %}"/>
+{% endblock cssjs %}
 {% block content %}
     {% include 'include/ad.html' %}
     <link rel="stylesheet" href="{% static 'css/index_new.css' %}"/>
-
     <hr/>
-
     <div>
         <h3>最新商品</h3>
+
         <div>
-            {% for h in NEW %}
-                {% product h.id %}
+            {% for p in NEW %}
+                {% product p %}
             {% endfor %}
-        <div style="clear: both"></div>
+            <div style="clear: both"></div>
         </div>
     </div>
 
-
-
-
-{#    <div>#}
-{#        <h2>最新商品</h2>#}
-{#        <div>#}
-{#            {% for n in NEW %}#}
-{#                <div style="float: left;">#}
-{#                    <a href="{% url 'products' n.id%}">#}
-{#                    <div><img src="{{ MEDIA_URL }}{{ n.image }}" alt=""/></div>#}
-{#                    <div>{{ n.name }}</div></a>#}
-{#                </div>#}
-{#            {% endfor %}#}
-{#        <div style="clear: both"></div>#}
-{#        </div>#}
-{#    </div>#}
     <hr/>
     <div>
         <h3>最热商品</h3>
         <div>
-            {% for h in HOT %}
-                {% product h.id %}
+            {% for p in HOT %}
+                {% product p %}
             {% endfor %}
-        <div style="clear: both"></div>
+            <div style="clear: both"></div>
         </div>
     </div>
 

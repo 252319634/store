@@ -18,7 +18,7 @@
 <div id="slide_div" class="slideBox">
     <ul class="items">
         {% for ad in ADS %}
-        <li><a href="{% url 'products'  %}?pid={{ ad.good.id }}" title=""><img src="{{ MEDIA_URL }}{{ ad.img }}" style="width: 980px"></a></li>
+        <li><a href="{% url 'product'  %}?pid={{ ad.good.id }}" title=""><img src="{{ MEDIA_URL }}{{ ad.img }}" style="width: 980px"></a></li>
         {% endfor %}
     </ul>
 </div>

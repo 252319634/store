@@ -54,20 +54,20 @@ def color(p):
     return colorstr
 
 
-
-@register.inclusion_tag('include/product.html')
-def product(pid):
+@register.inclusion_tag('include/product_block.html')
+def product(p):
     """
     包含标签用来输出单个商品的展示块(主图,商品名,价格,销量)
     """
     MEDIA_URL = settings.MEDIA_URL
-    p = Good.objects.get(id=pid)
+    # p = Good.objects.get(id=pid)
     return {'p': p, 'MEDIA_URL': MEDIA_URL}
+
 
 @register.inclusion_tag('include/product_detail.html')
 def product_detail(p):
     """
-    包含标签用来输出单个商品的详情()
+    包含标签用来输出单个商品图片框
     """
     MEDIA_URL = settings.MEDIA_URL
     return {'p': p, 'MEDIA_URL': MEDIA_URL}

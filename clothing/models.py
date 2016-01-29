@@ -167,11 +167,10 @@ class Color(models.Model):
 # 标签
 class Tag(models.Model):
     name = models.CharField(max_length=30, verbose_name='标签')
-    sex = models.SmallIntegerField(choices=((1, '男式'), (0, '女式')), null=False, default=1, blank=True, verbose_name='性别')
+
 
     def __str__(self):
-        str = "男" if self.sex == 1 else "女"
-        return self.name + "---" + str
+        return self.name
     class Meta:
         verbose_name = '标签'
         verbose_name_plural = verbose_name
@@ -256,6 +255,7 @@ class Good(models.Model):
     brand = models.ForeignKey(Brand, verbose_name='品牌')
     name = models.CharField(max_length=100, verbose_name='名称')
     artno = models.CharField(max_length=30, verbose_name='货号')
+    sex = models.SmallIntegerField(choices=((1, '男式'), (0, '女式')), null=False, default=1, blank=True, verbose_name='性别')
     attrvalue = models.ManyToManyField('AttrValue', verbose_name='属性')
     desc = models.CharField(max_length=100, verbose_name='简介')
     price = models.FloatField(default=0.0, verbose_name='价格')

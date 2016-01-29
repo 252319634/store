@@ -29,6 +29,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'clothing',
+    'debugtools',# 调试模板的工具 django-debugtools:http://django-debug-toolbar.readthedocs.org/en/1.4/
 )
 
 MIDDLEWARE_CLASSES = (

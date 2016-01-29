@@ -13,12 +13,12 @@
                 <li>分类</li>
                 {% for cat in CATEGORY %}
                     {% if cat.sex == 1 %}
-                        <li><a href="#">{{ cat.name }}</a></li>
+                        <li><a href="{% url 'category' %}?cid={{ cat.id }}">{{ cat.name }}</a></li>
                     {% endif %}
                 {% endfor %}
                 <li>品牌</li>
                 {% for b in BRAND_MAN %}
-                    <li><a href="{% url 'brand' %}?bid={{ b.brand }}">{{ b.brand__name }}</a></li>
+                    <li><a href="{% url 'brand' %}?bid={{b.id}}">{{ b.name }}</a></li>
                 {% endfor %}
             </ul>
         </li>
@@ -32,17 +32,17 @@
                 <li>分类</li>
                 {% for cat in CATEGORY %}
                     {% if cat.sex == 0 %}
-                        <li><a href="#">{{ cat.name }}</a></li>
+                        <li><a href="{% url 'category' %}?cid={{ cat.id }}">{{ cat.name }}</a></li>
                     {% endif %}
                 {% endfor %}
                 <li>品牌</li>
                 {% for b in BRAND_WOMAN %}
-                    <li><a href="brand/{{ b.brand }}">{{ b.brand__name }}</a></li>
+                    <li><a href="{% url 'brand' %}?bid={{ b.id }}">{{ b.name }}</a></li>
                 {% endfor %}
             </ul>
         </li>
-        <li role="presentation"><a href="#">品牌</a></li>
-        <li role="presentation"><a href="#">标签</a></li>
+        <li role="presentation"><a href="{% url 'brand' %}">品牌</a></li>
+        <li role="presentation"><a href="{% url 'tag' %}">标签</a></li>
     </ul>
     {#    <div>#}
     {#        <div id="man">#}
