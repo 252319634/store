@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% block content %}
+    <div>
+        <div>
+            <h1>登录</h1>
+            {% if user.is_authenticated %}
+                用户{{ user }}已登录!
+            {% else %}
+                <div>
+                    <div>
+                        <form action="{% url 'login' %}" method="post">
+                            {% csrf_token %}
+                            <span>用户名</span>
+                            {{ login_form.username }}
+                            {{ login_form.errors.username }}
+                            <span>密码</span>
+                            {{ login_form.password }}
+                            {{ login_form.errors.password }}
+                            {% if is_verify %}
+                            <span>验证码</span>
+<input type="text" name="verify_text" value=""><img src="/verify/" alt="" id="verifyImg"/>{{ verifyError }}
+                                {% endif %}
+                            <div>{{ login_form.errors.message }}
+                                <a href="#">忘记密码？</a>
+                                <input type="hidden" name="source_url" value="{{ request.META.HTTP_REFERER }}">
+                                <input type="submit" value="登录">
+                            </div>
+
+                        </form>
+                    </div>
+                    <div>
+                        <h4>还没有帐号？</h4>
+                        <p>申请一个新帐号就可以进行购物了哟</p>
+                        <a href="{% url 'register' %}">创建帐号</a>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

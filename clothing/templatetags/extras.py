@@ -64,54 +64,14 @@ def product(p):
     return {'p': p, 'MEDIA_URL': MEDIA_URL}
 
 
-@register.inclusion_tag('include/product_detail.html')
-def product_detail(p):
-    """
-    包含标签用来输出单个商品图片框
-    """
-    MEDIA_URL = settings.MEDIA_URL
-    return {'p': p, 'MEDIA_URL': MEDIA_URL}
-"""
-extras.py
-
-from django import template
-from blogapp.models import BlogPost
-
-register = template.Library()
-
-@register.inclusion_tag('bp_by_time.html')  # 通过修饰器注册inclution tag。
-def bp_by_time(n):
-    bps = BlogPost.objects.order_by('-timestamp')[:n]
-    return {'bps': bps}
-++++++++++++++++++++++
-
-bp_by_time.html  标签的模板
-
-{% autoescape off %}
-{% for bp in bps %}
-题目: <a href="/post/?BlogPost_id={{ bp.id }}">{{ bp.title }}</a><br>
-作者: {{ bp.author }}<br>
-正文: {{ bp.body }}<br>
-创建时间: {{ bp.timestamp }}<br>
-修改时间: {{ bp.last_modify_time }}
-<hr>
-{% endfor %}
-{% endautoescape %}
-+++++++++++++++++++++++++
-
-index.html
-
-{% extends "base.html" %}
-{% load extras %}  # 加载标签
-{% block content %}
-<h1>这是首页,欢迎访问我的网站!这个网站基于django!</h1>
-<div>
-{% bp_by_time 4 %} # 调用标签渲染页面局部
-</div>
-{% endblock %}
-+++++++++++++++++++++++++++
+# @register.inclusion_tag('include/product_detail.html')
+# def product_detail(p):
+#     """
+#     包含标签用来输出单个商品图片框
+#     加入购物车及选项
+#     """
+#     MEDIA_URL = settings.MEDIA_URL
+#     return {'p': p, 'MEDIA_URL': MEDIA_URL}
 
 
 
-
-"""

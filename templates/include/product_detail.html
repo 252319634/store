@@ -1,12 +1,13 @@
 {% load staticfiles %}
 {% load extras %}
-
+{% block cssjs %}
+    <link rel="stylesheet" href="{% static 'css/ShopShow.css' %}" type="text/css"/>
+    <script src="{% static 'js/MagicZoom.js' %}" type="text/javascript"></script>
+{% endblock %}
 <div>
     {#多图片浏览---------------开始#}
     <div style="float: left">
-        <link rel="stylesheet" href="{% static 'css/ShopShow.css' %}" type="text/css"/>
-        <link rel="stylesheet" href="{% static 'css/MagicZoom.css' %}" type="text/css"/>
-        <script src="{% static 'js/MagicZoom.js' %}" type="text/javascript"></script>
+
         <div id="tsShopContainer">
             <div id="tsImgS">
                 <a href="{{ MEDIA_URL }}{{ p.image }}" title="Images" class="MagicZoom" id="MagicZoom">
@@ -31,7 +32,7 @@
                 </div>
                 <div id="tsImgSArrR" onclick="tsScrollArrRight()"></div>
             </div>
-            <img class="MagicZoomLoading" width="16" height="16" src="images/loading.gif" alt="Loading..."/>
+            <img class="MagicZoomLoading" width="16" height="16" src="{% static 'img/loading.gif' %}" alt="Loading..."/>
         </div>
         <script src="{% static 'js/ShopShow.js' %}"></script>
     </div>
@@ -45,14 +46,15 @@
         </div>
         <ul>
             <li>
-                <span>价格</span> <strong><em>¥</em><em>
-                {% for sku in p.goodsku_set.all %}
-                    <li>{{ sku.old_price }}</li>{% endfor %}
+                <span>价格</span> <strong style="text-decoration:line-through"><em>¥</em><em>
+                {{ p.prices }}
             </em></strong>
             </li>
             <li>
-                <span>优惠价</span> <strong><em>¥</em><em>{% for sku in p.goodsku_set.all %}
-                <li>{{ sku.new_price }}</li>{% endfor %}</em></strong>
+                <span>优惠价</span> <strong><em>¥</em><em>
+                {% for sku in p.goodsku_set.all %}
+                    <li>{{ sku.new_price }}</li>{% endfor %}
+            </em></strong>
             </li>
         </ul>
         <div>
@@ -63,26 +65,24 @@
                 <li><span>颜色:</span>
                     <ul>{% autoescape off %}{{ p|color }}{% endautoescape %}</ul>
                 </li>
-                <li><span>数量:</span>1</li>
                 <li><span>库存</span>
                     <ul>{% for sku in p.goodsku_set.all %}
                         <li>{{ sku.num }}</li>{% endfor %}</ul>
                 </li>
             </ul>
         </div>
-        <br/>商品分类:{{ p.category }}
-        <br/>商品品牌:{{ p.brand }}
-        <br/>商品货号:{{ p.artno }}
-        <br/>商品简介:{{ p.desc }}
-        <br/>商品属性:{% for a in p.attrvalue.all %}{{ a.attr.name }}:{{ a.name }}{% endfor %}
-        <br/>商品总销量:{{ p.sales }}
-        <br/>本月销量:{{ p.sales_month }}
-        <br/>
-
         <button>加入购物车</button>
 
     </div>
 
 
 </div>
-
+<div style="clear: both"></div>
+<div>
+    <br/>商品分类:{{ p.category }}
+    <br/>商品品牌:{{ p.brand }}
+    <br/>商品属性:{% for a in p.attrvalue.all %}{{ a.attr.name }}:{{ a.name }}{% endfor %}
+    <br/>商品总销量:{{ p.sales }}
+    <br/>商品简介:{% autoescape off %}{{ p.details }}{% endautoescape %}
+    <br/>
+</div>

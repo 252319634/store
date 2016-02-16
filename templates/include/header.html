@@ -1,15 +1,35 @@
 {% load staticfiles %}
 
-<link rel="stylesheet" href="{% static 'css/header.css' %}"/>
+
 <div>
-    <h1>衣服店</h1>
+    <div>
+        <div style="float:left;"><h1>衣服店</h1></div>
+        <div style="float:right; margin: 10px">
+            {#        {% if user.is_anonymous %}#}
+            {#        是否是匿名用户#}
+            {% if user.is_authenticated %}
+                {#            是否是登录用户#}
+                <a href="{% url 'user' %}">{{ user }}</a>
+                <a href="{% url 'cart' %}">购物车</a>
+                <a href="{% url 'logout' %}">退出</a>
+
+            {% else %}
+                <a href="{% url 'login' %}">登录</a>
+                <a href="{% url 'register' %}">注册</a>
+            {% endif %}
+
+        </div>
+
+    </div>
+    <div style="clear: both"></div>
     <ul class="nav nav-tabs">
         <li role="presentation" class="active "><a href="{% url 'index' %}">首页</a></li>
         <li role="presentation">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown"
-               role="button" aria-haspopup="true" aria-expanded="false">男装<span
+               role="button" aria-haspopup="true" aria-expanded="true">男装<span
                     class="caret"></span></a>
             <ul class="dropdown-menu">
+                <li><a href="{% url 'man' %}">所有男装</a></li>
                 <li>分类</li>
                 {% for cat in CATEGORY %}
                     {% if cat.sex == 1 %}
@@ -18,7 +38,7 @@
                 {% endfor %}
                 <li>品牌</li>
                 {% for b in BRAND_MAN %}
-                    <li><a href="{% url 'brand' %}?bid={{b.id}}">{{ b.name }}</a></li>
+                    <li><a href="{% url 'brand' %}?bid={{ b.id }}">{{ b.name }}</a></li>
                 {% endfor %}
             </ul>
         </li>
@@ -29,6 +49,7 @@
                aria-expanded="false">女装<span
                     class="caret"></span></a>
             <ul class="dropdown-menu">
+                <li><a href="{% url 'woman' %}">所有女装</a></li>
                 <li>分类</li>
                 {% for cat in CATEGORY %}
                     {% if cat.sex == 0 %}
@@ -41,45 +62,8 @@
                 {% endfor %}
             </ul>
         </li>
-        <li role="presentation"><a href="{% url 'brand' %}">品牌</a></li>
-        <li role="presentation"><a href="{% url 'tag' %}">标签</a></li>
+        <li role="presentation"><a href="{% url 'search' %}">搜索</a></li>
     </ul>
-    {#    <div>#}
-    {#        <div id="man">#}
-    {#            <div>#}
-    {#                <h3>男装分类</h3>#}
-    {#                {% for cat in CATEGORY %}#}
-    {#                    {% if cat.sex == 1 %}#}
-    {#                        <a href="#">{{ cat.name }}</a>#}
-    {#                    {% endif %}#}
-    {#                {% endfor %}#}
-    {#            </div>#}
-    {#            <div>#}
-    {#                <h3>品牌</h3>#}
-    {#                {% for b in BRAND_MAN %}#}
-    {#                    <a href="brand/{{ b.brand }}">{{ b.brand__name }}</a>#}
-    {#                {% endfor %}#}
-    {#            </div>#}
-    {#        </div>#}
-    {##}
-    {#        <div id="woman">#}
-    {#            <div>#}
-    {#                <h3>女装分类</h3>#}
-    {#                {% for cat in CATEGORY %}#}
-    {#                    {% if cat.sex == 0 %}#}
-    {#                        <a href="#">{{ cat.name }}</a>#}
-    {#                    {% endif %}#}
-    {#                {% endfor %}#}
-    {#            </div>#}
-    {#            <div>#}
-    {#                <h3>品牌</h3>#}
-    {#                {% for b in BRAND_WOMAN %}#}
-    {#                    <a href="brand/{{ b.brand }}">{{ b.brand__name }}</a>#}
-    {#                {% endfor %}#}
-    {#            </div>#}
-    {#        </div>#}
-    {##}
-    {#    </div>#}
 </div>
 
 

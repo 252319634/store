@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% block cssjs %}
+{% endblock cssjs %}
+{% load staticfiles %}
+{% load extras %}
+{% block content %}
+
+    <div>
+        <h1>收银台</h1>
+        {% if cart %}
+            <table>
+                <tr>
+                    <th>商品</th>
+                    <th>数量</th>
+                    <th>价格</th>
+                    <th>小计</th>
+                </tr>
+                {% for item in cart %}
+                    <tr>
+                        <td><a href="{% url 'product' %}?pid={{ item.goodsku.good.id }}"><img
+                                src="{{ MEDIA_URL }}{{ item.goodsku.image }}" alt=""></a>
+                            <h5>{{ item.goodsku }}</h5>
+                        </td>
+                        <td>{{ item.count }}</td>
+                        <td>{{ item.goodsku.new_price }}元</td>
+                        <td>{{ item.sum_price }}元</td>
+                    </tr>
+                {% endfor %}
+
+            </table>
+            <h4>收货地址:</h4>
+            <table>
+                <tr>
+                    <td>收货人</td>
+                    <td>电话</td>
+                    <td>地址</td>
+                </tr>
+                <tr>
+                    <td>{{ userprofile.recipients }}</td>
+                    <td>{{ userprofile.tel }}</td>
+                    <td>{{ userprofile.address }}</td>
+                </tr>
+            </table>
+            <br/>
+            <form action="" method="post">
+            {% csrf_token %}
+                    <span>总价：{{ cart.total_price }}元</span>
+                <input type="submit" value="付款"/>
+            </form>
+
+        {% else %}
+            <h3>还没有需要结算的商品!</h3>
+        {% endif %}
+    </div>
+
+{% endblock %}

@@ -17,7 +17,8 @@ SECRET_KEY = '@8guj6tx@a%)b@7=0303y8lc7qpcq01$o0n!5=ck$dc9ou!=uv'
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
+# 是否开启验证码
+VERIFY = True
 
 # Application definition
 
@@ -29,7 +30,8 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'clothing',
-    'debugtools',# 调试模板的工具 django-debugtools:http://django-debug-toolbar.readthedocs.org/en/1.4/
+    'debugtools',  # 调试模板的工具 django-debugtools:http://django-debug-toolbar.readthedocs.org/en/1.4/
+    'tinymce',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -49,7 +51,7 @@ ROOT_URLCONF = 'store.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR,  'templates')],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -83,7 +85,7 @@ DATABASES = {
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'zh-hans'
 
 TIME_ZONE = 'UTC'
 
@@ -91,7 +93,7 @@ USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)
@@ -103,5 +105,93 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 #
 # TEMPLATE_DIRS = (
-#     os.path.join(BASE_DIR,  'templates'),
+# os.path.join(BASE_DIR,  'templates'),
 # )
+
+# 富文本编辑器配置
+TINYMCE_DEFAULT_CONFIG = {
+    'theme': 'advanced',
+    'theme_advanced_toolbar_location': 'top',
+    'theme_advanced_toolbar_align': 'left',
+    'width': 600,
+    'height': 400,
+}
+#
+# # 自定义日志输出信息
+# LOGGING = {
+#     'version': 1,
+#     'disable_existing_loggers': True,
+#     'formatters': {
+#         'standard': {
+#             'format': '%(asctime)s [%(threadName)s:%(thread)d] [%(name)s:%(lineno)d] [%(module)s:%(funcName)s] [%(levelname)s]- %(message)s'}
+#         #日志格式
+#     },
+#     'filters': {
+#     },
+#     'handlers': {
+#         'mail_admins': {
+#             'level': 'ERROR',
+#             'class': 'django.utils.log.AdminEmailHandler',
+#             'include_html': True,
+#         },
+#         'default': {
+#             'level': 'DEBUG',
+#             'class': 'logging.handlers.RotatingFileHandler',
+#             'filename': 'log/all.log',  #日志输出文件
+#             'maxBytes': 1024 * 1024 * 5,  #文件大小
+#             'backupCount': 5,  #备份份数
+#             'formatter': 'standard',  #使用哪种formatters日志格式
+#         },
+#         'error': {
+#             'level': 'ERROR',
+#             'class': 'logging.handlers.RotatingFileHandler',
+#             'filename': 'log/error.log',
+#             'maxBytes': 1024 * 1024 * 5,
+#             'backupCount': 5,
+#             'formatter': 'standard',
+#         },
+#         'console': {
+#             'level': 'DEBUG',
+#             'class': 'logging.StreamHandler',
+#             'formatter': 'standard'
+#         },
+#         'request_handler': {
+#             'level': 'DEBUG',
+#             'class': 'logging.handlers.RotatingFileHandler',
+#             'filename': 'log/script.log',
+#             'maxBytes': 1024 * 1024 * 5,
+#             'backupCount': 5,
+#             'formatter': 'standard',
+#         },
+#         'scprits_handler': {
+#             'level': 'DEBUG',
+#             'class': 'logging.handlers.RotatingFileHandler',
+#             'filename': 'log/script.log',
+#             'maxBytes': 1024 * 1024 * 5,
+#             'backupCount': 5,
+#             'formatter': 'standard',
+#         }
+#     },
+#     'loggers': {
+#         'django': {
+#             'handlers': ['default', 'console'],
+#             'level': 'DEBUG',
+#             'propagate': False
+#         },
+#         'django.request': {
+#             'handlers': ['request_handler'],
+#             'level': 'DEBUG',
+#             'propagate': False,
+#         },
+#         'scripts': {
+#             'handlers': ['scprits_handler'],
+#             'level': 'INFO',
+#             'propagate': False
+#         },
+#         'store.views': {
+#             'handlers': ['default', 'error'],
+#             'level': 'DEBUG',
+#             'propagate': True
+#         },
+#     }
+# }

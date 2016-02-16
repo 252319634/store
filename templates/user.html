@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% block content %}
+    <br/>
+    <form action="" method="post">
+
+        <h4>收货信息:</h4>
+        {% csrf_token %}
+        {{ addressform }}
+        <input type="submit" value="保存">
+    </form>
+    <div>
+        <h4>购物记录:</h4>
+        <table>
+            {% for o in order %}
+                <tr>
+                    <td>订单号:{{ o.orderid }}</td><td>时间:{{ o.time }}</td>
+                </tr>
+
+                <tr>
+                    <td colspan="3">收货地址:{{ o.address }}</td>
+                </tr>
+                <tr>
+                    <td>商品</td>
+                    <td>数量</td>
+                    <td>单价</td>
+                    <td>小计</td>
+                </tr>
+                {% for s in selling %}
+                    {% if s.order.pk == o.pk %}
+                        <tr>
+                            <td><a href="{% url 'product' %}?pid={{ s.goodsku.good.pk }}">{{ s.goodsku }}</a></td>
+                            <td>{{ s.count }}</td>
+                            <td>{{ s.price }}</td>
+                            <td>{{ s.total_price }}</td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+                <tr>
+                    <td>总价:{{ o.total_price }}</td>
+                </tr>
+                <tr><td>
+                    &nbsp;</td></tr>
+            {% endfor %}
+
+        </table>
+        {#        <table>#}
+        {#            {% for o in order %}#}
+        {#                <tr>#}
+        {#                    <td>订单号:{{ o.0 }}</td>#}
+        {#                    <td>时间:{{ o.1 }}</td>#}
+        {#                </tr>#}
+        {#                <tr>#}
+        {#                    <td>商品</td>#}
+        {#                    <td>数量</td>#}
+        {#                    <td>价格</td>#}
+        {#                    <td>合计</td>#}
+        {#                </tr>#}
+        {#                {% for i in selling %}#}
+        {#                    {% if i.orderid == o %}#}
+        {##}
+        {#                            <tr>#}
+        {#                                <td><a href="{% url 'product' %}?pid={{ i.goodsku.good.pk }}">{{ i.goodsku }}</a></td>#}
+        {#                                <td>{{ i.count }}</td>#}
+        {#                                <td>{{ i.price }}</td>#}
+        {#                                <td>{{ i.totel_price }}</td>#}
+        {#                            </tr>#}
+        {##}
+        {#                    {% endif %}#}
+        {##}
+        {#                {% endfor %}#}
+        {#                <tr>#}
+        {#                    <td>收货信息:{{ o.2 }}</td>#}
+        {#                </tr>#}
+        {#            {% endfor %}#}
+        {##}
+        {#            <tr>#}
+        {#                <td>总价:{{ selling.totel_price }}</td>#}
+        {#            </tr>#}
+        {#        </table>#}
+    </div>
+{% endblock %}
