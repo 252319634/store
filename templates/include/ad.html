@@ -15,7 +15,7 @@
         });
     </script>
 {% endblock cssjs %}
-<div id="slide_div" class="slideBox">
+<div id="slide_div" class="slideBox" style="z-index:1;position: relative;">
     <ul class="items">
         {% for ad in ADS %}
         <li><a href="{% url 'product'  %}?pid={{ ad.good.id }}" title=""><img src="{{ MEDIA_URL }}{{ ad.img }}" style="width: 980px"></a></li>

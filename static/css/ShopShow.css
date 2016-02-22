@@ -4,7 +4,7 @@ li{list-style:none;}
 
 /* tsShopContainer */
 #tsShopContainer li,#tsShopContainer img{vertical-align:top;}
-#tsShopContainer{width:300px;margin:5px auto 0 auto;position:relative;border:1px solid #CCC;font-size:12px;padding-bottom:5px;}
+#tsShopContainer{width:302px;margin:5px auto 0 auto;position:relative;border:1px solid #CCC;font-size:12px;padding-bottom:5px;}
 #tsShopContainer #tsImgS{text-align:center;width:100%;position:relative;}
 #tsShopContainer #tsImgS a{display:block;text-align:center;margin:0px auto;}
 #tsShopContainer #tsImgS img{border:0px;}

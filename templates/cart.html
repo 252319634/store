@@ -5,31 +5,46 @@
 {% load staticfiles %}
 {% load extras %}
 {% block content %}
-
+    <style>
+    #cart{
+        width: 980px;
+    }
+    #cart a{
+        text-decoration: none;
+    }
+    #cart th{
+        padding: 8px;
+        border: solid 1px #bbbbbb;
+        background-color: #eeeeee;
+    }
+        #cart td{
+            padding: 5px;
+            border: solid 1px #dddddd;
+        }
+    </style>
     <div>
-        <h1>购物车</h1>
+        <h3>购物车</h3>
         {% if cart %}
-            <table>
+            <table id="cart">
                 <tr>
 
-                    <th>结算否</th>
-                    <th>商品</th>
-                    <th>尺寸颜色</th>
-                    <th>数量</th>
-                    <th>原价</th>
-                    <th>现价</th>
-                    <th>小计</th>
-                    <th>操作</th>
+                    <th width="60">结算否</th>
+                    <th width="200">商品</th>
+                    <th width="70">尺寸颜色</th>
+                    <th width="100">数量</th>
+                    <th width="60">原价</th>
+                    <th width="60">现价</th>
+                    <th width="60">小计</th>
+                    <th width="50">操作</th>
                 </tr>
                 {% for item in cart %}
                     <tr>
                         <td><a href="{% url 'cart'%}?act={{ item.selected }}&cartid={{ item.pk }}"> {% if item.selected%}结算{% else %}不结算{% endif %}</a></td>
-                        <td><a href="{% url 'product' %}?pid={{ item.goodsku.good.id }}"><img
-                                src="{{ MEDIA_URL }}{{ item.goodsku.image }}" alt=""></a>
-                            <h5>{{ item.goodsku.good }}</h5>
+                        <td><a href="{% url 'product' %}?pid={{ item.goodsku.good.id }}">
+                            <img src="{{ MEDIA_URL }}{{ item.goodsku.image }}" alt="" style="height:50px;width: 50px;float: left">{{ item.goodsku.good }}</a>
                         </td>
                         <td>{{ item.goodsku }}</td>
-                        <td><a href="{% url 'cart' %}?act=sub&cartid={{ item.pk }}">-</a>{{ item.count }}<a
+                        <td><a href="{% url 'cart' %}?act=sub&cartid={{ item.pk }}" >-</a> {{ item.count }} <a
                                 href="{% url 'cart' %}?act=add&cartid={{ item.pk }}">+</a>  <span>(库存:{{ item.goodsku.num }})</span></td>
                         <td style="text-decoration:line-through">{{ item.goodsku.old_price }}元</td>
                         <td>{{ item.goodsku.new_price }}元</td>
@@ -38,9 +53,8 @@
                     </tr>
                 {% endfor %}
                 <tr>
-                    <td><a href="{% url 'checkout' %}">去结算</a>
-                        &nbsp;&nbsp;&nbsp;总价：{{ cart.total_price }}元
-                    </td>
+                    <td ><a href="{% url 'checkout' %}">去结算</a></td>
+                    <td colspan="7" >总价：{{ cart.total_price }}元</td>
                 </tr>
             </table>
         {% else %}

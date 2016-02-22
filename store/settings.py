@@ -16,10 +16,11 @@ SECRET_KEY = '@8guj6tx@a%)b@7=0303y8lc7qpcq01$o0n!5=ck$dc9ou!=uv'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 # 是否开启验证码
 VERIFY = True
-
+# 商店名
+STORE_NAME = '衣服店'
 # Application definition
 
 INSTALLED_APPS = (
@@ -30,7 +31,8 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'clothing',
-    'debugtools',  # 调试模板的工具 django-debugtools:http://django-debug-toolbar.readthedocs.org/en/1.4/
+    'debugtools',
+    # 调试模板的工具 django-debugtools:http://django-debug-toolbar.readthedocs.org/en/1.4/
     'tinymce',
 )
 
@@ -113,18 +115,36 @@ TINYMCE_DEFAULT_CONFIG = {
     'theme': 'advanced',
     'theme_advanced_toolbar_location': 'top',
     'theme_advanced_toolbar_align': 'left',
-    'width': 600,
-    'height': 400,
+    'width': 1100,
+    'height': 500,
 }
 #
-# # 自定义日志输出信息
+# 自定义日志输出信息
+# LOGGING = {
+#     'version': 1,
+#     'disable_existing_loggers': False,
+#     'handlers': {
+#         'file': {
+#             'level': 'DEBUG',
+#             'class': 'logging.FileHandler',
+#             'filename': 'log/all.log',
+#         },
+#     },
+#     'loggers': {
+#         'django.request': {
+#             'handlers': ['file'],
+#             'level': 'DEBUG',
+#             'propagate': True,
+#         },
+#     },
+# }
 # LOGGING = {
 #     'version': 1,
 #     'disable_existing_loggers': True,
 #     'formatters': {
 #         'standard': {
 #             'format': '%(asctime)s [%(threadName)s:%(thread)d] [%(name)s:%(lineno)d] [%(module)s:%(funcName)s] [%(levelname)s]- %(message)s'}
-#         #日志格式
+#         # 日志格式
 #     },
 #     'filters': {
 #     },
@@ -138,9 +158,12 @@ TINYMCE_DEFAULT_CONFIG = {
 #             'level': 'DEBUG',
 #             'class': 'logging.handlers.RotatingFileHandler',
 #             'filename': 'log/all.log',  #日志输出文件
-#             'maxBytes': 1024 * 1024 * 5,  #文件大小
-#             'backupCount': 5,  #备份份数
-#             'formatter': 'standard',  #使用哪种formatters日志格式
+#             ##############
+#             # 日志文件必须存在,否则报错,Apps aren't loaded yet.
+#             ##############
+#             'maxBytes': 1024 * 1024 * 5,  # 文件大小
+#             'backupCount': 5,  # 备份份数
+#             'formatter': 'standard',  # 使用哪种formatters日志格式
 #         },
 #         'error': {
 #             'level': 'ERROR',

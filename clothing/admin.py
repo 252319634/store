@@ -49,6 +49,10 @@ class GoodSkuAdminInline(admin.StackedInline):
     # filter_horizontal = ('image',)
 
 
+class GoodSkuAdmin(admin.ModelAdmin):
+    list_display = ['good', 'cs']
+
+
 class GoodAdmin(admin.ModelAdmin):
     inlines = [GoodSkuAdminInline]
     filter_horizontal = ('attrvalue', 'tag')  # 多选水平排列
@@ -64,7 +68,7 @@ class SellingAdmin(admin.ModelAdmin):
     # 这部分也可以写在model中
     # def total_price(self, obj):
     # # ModelAdmin中的方法会得到两个参数,第一个是类本身的一个实例(app.GoodsClassAdmin),第二个是这个类管理的模型实例(GoodsClass)
-    #     return obj.count * obj.price
+    # return obj.count * obj.price
     # total_price.short_description = '小计'
     ##################
 
@@ -100,9 +104,8 @@ admin.site.register(Category, CategoryAdmin)
 admin.site.register(Brand)
 admin.site.register(Size)
 admin.site.register(Tag)
-# admin.site.register(Img)
 admin.site.register(Good, GoodAdmin)
-admin.site.register(GoodSku)
+admin.site.register(GoodSku, GoodSkuAdmin)
 admin.site.register(Attr, AttrAdmin)
 admin.site.register(AttrValue)
 admin.site.register(Color)

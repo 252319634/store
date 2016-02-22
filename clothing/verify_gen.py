@@ -35,7 +35,7 @@ def make_noises(drw, points=300):
 def get_verify():
     a = Image.new('RGB', (80, 36), 'white')
     drw = ImageDraw.Draw(a)
-    myfont = ImageFont.truetype('simsun.ttc', size=32)
+    myfont = ImageFont.truetype('segoeprb.ttf', size=22)
     atext = get_text()
     drw.text((10, 2), atext, font=myfont, fill='green')
     make_noises(drw)

@@ -18,7 +18,7 @@ class UserProfile(models.Model):
     qq = models.CharField(max_length=20, default='', blank=True, verbose_name='QQ号码')
     tel = models.CharField(max_length=20, default='', blank=True, verbose_name='手机号码')
     address = models.CharField(max_length=200, default='', blank=True, verbose_name='地址')
-
+    view_history = models.CommaSeparatedIntegerField(max_length=10, default='', null=True, verbose_name='浏览记录')
     def __str__(self):
         return self.user.username
 
@@ -257,10 +257,10 @@ class GoodSku(models.Model):
     sales = models.IntegerField(default=0, verbose_name='销量')
     image = models.ImageField(upload_to='%Y%m', blank=True, null=True, verbose_name='图片')
 
-    def sc(self):  # 计算字段要显示在修改页面中只能定义在只读字段中(否则不显示):readonly_fields = ('sc',)
-        return '%s,%s' % (self.color.name, self.size.name)
+    def cs(self):  # 计算字段要显示在修改页面中只能定义在只读字段中(否则不显示):readonly_fields = ('sc',)
+        return '%s,%s' % (self.size.name, self.color.name)
 
-    sc.short_description = '尺寸颜色'  # 用于显示时的名字 , 没有这个将显示'sc'
+    cs.short_description = '尺寸颜色'  # 用于显示时的名字 , 没有这个将显示'sc'
 
 
     def __str__(self):
@@ -271,6 +271,15 @@ class GoodSku(models.Model):
         重写save方法,保存时更新商品的 价格,销量,库存 为sku的统计后的数据
         """
         super(self.__class__, self).save(*args, **kwargs)  # 先保存一下sku
+        self.good.prices = self.good._prices()
+        self.good.sales = self.good._sales()
+        self.good.nums = self.good._nums()
+        self.good.save()  # 更新商品的信息
+    def delete(self, *args, **kwargs):
+        """
+        重写save方法,保存时更新商品的 价格,销量,库存 为sku的统计后的数据
+        """
+        super(self.__class__, self).delete(*args, **kwargs)  # 先删除sku
         self.good.prices = self.good._prices()
         self.good.sales = self.good._sales()
         self.good.nums = self.good._nums()
@@ -297,7 +306,7 @@ class Good(models.Model):
     prices = models.CharField(max_length=20, default='0', verbose_name='价格')
     sales = models.IntegerField(default=0, verbose_name='销量')
     nums = models.IntegerField(default=0, verbose_name='库存')
-
+    view = models.IntegerField(default=0, null=True, verbose_name='浏览量')
     def _prices(self):
         """
         价格,sku的价格区间 : '2000-2999'
@@ -306,7 +315,7 @@ class Good(models.Model):
         skus = self.goodsku_set.all()
         price = []
         for sku in skus:
-            price.append(sku.new_price)
+            price.append(sku.old_price)
         price.sort()
 
         if price[0] == price[-1]:
@@ -348,3 +357,4 @@ class Good(models.Model):
     class Meta:
         verbose_name = '商品'
         verbose_name_plural = '商品'
+        ordering = ['-view']

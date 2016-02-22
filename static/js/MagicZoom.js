@@ -504,13 +504,13 @@ function MagicZoom_findZooms() {
             }
             re = new RegExp(/zoom\-width(\s+)?:(\s+)?(\w+)/i);
             matches = re.exec(aels[i].rel);
-            bigCont.style.width = '300px';
+            bigCont.style.width = '500px';
             if (matches) {
                 bigCont.style.width = matches[3]
             }
             re = new RegExp(/zoom\-height(\s+)?:(\s+)?(\w+)/i);
             matches = re.exec(aels[i].rel);
-            bigCont.style.height = '297px';
+            bigCont.style.height = '500px';
             if (matches) {
                 bigCont.style.height = matches[3]
             }

@@ -13,8 +13,10 @@ from clothing import forms
 from clothing.searchtools import add_to_session
 from clothing.verify_gen import get_verify, verifyTheText
 from models import *
-# Create your views here.
 from store import settings
+import logging
+
+logger = logging.getLogger('store.views')
 
 
 def verify(request):
@@ -30,13 +32,14 @@ def verify(request):
 
 
 def global_setting(request):
+    setting = settings  # 设置参数,主要用到(店名,是否开启验证码)
     MEDIA_URL = settings.MEDIA_URL  # 媒体路径
     ADS = Ad.objects.all()  # 广告
     CATEGORY = Category.objects.all()  # 分类信息
     GOOD_MAN = Good.objects.filter(sex=1)  # 所有男式商品
     # BRAND_MAN = Brand.objects.filter(sex=1).values('id', 'name').distinct()  # 男式品牌
-    BRAND_MAN = Brand.objects.filter(good__sex=1).distinct()[:5]  # distinct去重 所有的男式品牌
-    BRAND_WOMAN = Brand.objects.filter(good__sex=0).distinct()[:5]  # distinct去重  # 女式品牌
+    BRAND_MAN = Brand.objects.filter(good__sex=1).distinct()[:10]  # distinct去重 所有的男式品牌
+    BRAND_WOMAN = Brand.objects.filter(good__sex=0).distinct()[:10]  # distinct去重  # 女式品牌
     NEW = Good.objects.all().order_by('-pk')[:4]  # 最新商品
     HOT = Good.objects.all().order_by('-sales')[:4]  # 最新商品
     TAG = Tag.objects.all()  # 标签
@@ -181,55 +184,62 @@ def search(request):
 
     # 已选条件 及 筛选出的商品↓
 
-    try:  # 筛下关键字
-        keys = request.GET.get('search_keys', '')  # 得到关键字
-        if keys == "-":  # 如果关键字是"-"
-            request.session['search_keys'] = ""  # 把session中的关键字设置为空
-        elif keys:
-            request.session['search_keys'] = keys  # 关键字不是"-",就把关键字设置为获得的关键字,这样可以实现主动设置关键字的有无,不会因为url中没有keys参数就被设置为空
-        g = g.filter(name__icontains=request.session.get('search_keys'))  # 过滤商品为含有关键字的商品
-    except:
-        pass
+    # 设置筛选关键字
+    keys = request.GET.get('search_keys', '')  # 得到关键字
+    if keys == "-":  # 如果关键字是"-"
+        request.session['search_keys'] = ""  # 把session中的关键字设置为空
+    elif keys:
+        request.session['search_keys'] = keys
+        # 关键字不是"-",就把关键字设置为获得的关键字,这样可以实现主动设置关键字的有无,不会因为url中没有keys参数就被设置为空
 
-    try:
-        act = request.GET.get('act', '')
-        if act == "add":  # 增加选项
-            item = request.GET.get('item', '')
-            id = request.GET.get('id', '')
-            name = str(attrname(item).objects.get(id=id))
-            add_to_session(request, item, id, name)  # 把选项的item,name,id添加到session.
-            # 如:item:"category",id:1, name:"女---T恤&POLO衫"
-        elif act == "sub":  # 减少选项
-            item = request.GET.get('item', '')
+    # 设置选项
+    act = request.GET.get('act', '')
+    if act == "add":  # 增加选项
+        item = request.GET.get('item', '')
+        id = request.GET.get('id', '')
+        name = str(attrname(item).objects.get(id=id))
+        add_to_session(request, item, id, name)  # 把选项的item,name,id添加到session.
+        # 如:item:"category",id:1, name:"女---T恤&POLO衫"
+    elif act == "sub":  # 减少选项
+        item = request.GET.get('item', '')
+        try:
             del request.session[item]  # 删除这个选项
-    except:
-        pass
-
+        except Exception:
+            pass
+    # 根据关键字筛选商品
     try:
-        item = request.session.get("category", '')
-        if item:
-            id = int(item.get('id'))
-            category = Category.objects.get(id=id)
-            g = g.filter(category=category)
-        else:
-            category = Category.objects.all()
+        if request.session['search_keys']:
+            keys = request.session['search_keys']
+            onekeys = keys.split(' ')
+            for k in onekeys:
+                g = g.filter(name__icontains=k)  # 过滤商品为含有关键字的商品
+    except Exception as e:
+        logger.error(e)
 
-        item = request.session.get("brand", '')
-        if item:
-            id = int(item.get('id'))
-            brand = Brand.objects.get(id=id)
-            g = g.filter(brand=brand)
-        else:
-            brand = Brand.objects.all()
-        item = request.session.get("tag", '')
-        if item:
-            id = int(item.get('id'))
-            tag = Tag.objects.get(id=id)
-            g = g.filter(tag=tag)
-        else:
-            tag = Tag.objects.all()
-    except:
-        pass
+    # 根据category筛选商品
+    item = request.session.get("category", '')
+    if item:
+        id = int(item.get('id'))
+        category = Category.objects.get(id=id)  # 这个用于显示到页面中的已选条件
+        g = g.filter(category=category)
+    else:
+        category = Category.objects.all()  # 显示到页面中的可选条件
+    # 根据brand筛选商品
+    item = request.session.get("brand", '')
+    if item:
+        id = int(item.get('id'))
+        brand = Brand.objects.get(id=id)
+        g = g.filter(brand=brand)
+    else:
+        brand = Brand.objects.all()
+    # 根据tag筛选商品
+    item = request.session.get("tag", '')
+    if item:
+        id = int(item.get('id'))
+        tag = Tag.objects.get(id=id)
+        g = g.filter(tag=tag)
+    else:
+        tag = Tag.objects.all()
 
     g_list = getPage(request, g, num=20)
     # 已选条件 及 筛选出的商品↑
@@ -287,8 +297,34 @@ def products(request):
     # 得到商品id
     try:
         pid = request.GET.get('pid', None)
+        user = get_user(request)
+        if user.is_anonymous():
+            pass
+        else:
+            pass
+            userprofile = UserProfile.objects.get(user=user)
+            view_history = userprofile.view_history.split(',')
+            if '' in view_history:
+                view_history.remove('')
+            if str(pid) not in view_history:
+                view_history.append(str(pid))
+                if len(view_history)>6:
+                    view_history = view_history[-6:]
+                userprofile.view_history = ','.join(view_history)
+                userprofile.view_history.strip(',')
+                userprofile.save()
+            else:
+                view_history.remove(str(pid))
+                view_history.append(str(pid))
+                if len(view_history)>6:
+                    view_history = view_history[-6:-1]
+                userprofile.view_history = ','.join(view_history)
+                userprofile.save()
         try:
             p = Good.objects.get(pk=pid)  # 查询到商品对象
+            p.view += 1
+            p.save()
+
         except Good.DoesNotExist:
             return render(request, 'error.html', {"reason": "商品不存在"})
     except Exception as e:
@@ -301,16 +337,24 @@ def products(request):
 @login_required(login_url='/login/')  # 需要登录
 def mycart(request):
     # 购物车,删除物品,增加减少物品数量,设置结算否
-    try:
-        if request.method=='POST':
-            skuid = request.POST.get('sku_id')
-            num = request.POST.get('num')
-            goodsku = GoodSku.objects.get(id=skuid)
-            cart = Cart(user=request.user,goodsku=goodsku,count=num)
+
+    if request.method == 'POST':
+        skuid = request.POST.get('sku_id')
+        num = request.POST.get('num')
+        goodsku = GoodSku.objects.get(id=skuid)
+        cart = Cart.objects.filter(user=request.user, goodsku=goodsku)
+        if not cart:
+            cart = Cart(user=request.user, goodsku=goodsku, count=num)
+            if cart.count > goodsku.num:
+                cart.count = cart.goodsku.num
             cart.save()
-            return redirect('/cart/')
-    except Exception as e:
-        print e
+        else:
+            cart[0].count += int(num)
+            if cart[0].count > cart[0].goodsku.num:
+                cart[0].count = cart[0].goodsku.num
+            cart[0].save()
+        return redirect('/cart/')
+
     try:
         # 减少物品数量
         if request.GET.get('act', '') == 'sub':
@@ -344,7 +388,7 @@ def mycart(request):
             cartid = request.GET.get('cartid')
             cart = Cart.objects.get(id=cartid)
             cart.delete()
-        # 添加物品
+            # 添加物品
 
     except Exception as e:
         print Exception, e
@@ -368,43 +412,43 @@ def mycheckout(request):
             cart.total_price += i.sum_price()
         return render(request, 'checkout_view.html', locals())
     if request.method == 'POST':
-        now = datetime.datetime.now()
-        orderid = str(now.year) + str(now.month) + str(now.day) + str(now.hour) + str(now.minute) + str(
-            now.second) + "u%s" % (user.pk)
-        address = "%s %s %s" % (userprofile.recipients, userprofile.tel, userprofile.address)
-        order = Order(user=user,orderid=orderid,time=now,address=address)
-        order.save()
-        for i in cart:
-            selling = Selling(order=order, goodsku=i.goodsku, count=i.count, price=i.goodsku.new_price)
-            selling.save()
-            i.delete()
-        return render(request, 'checkout_message.html', locals())
+        if cart:
+            now = datetime.datetime.now()
+            orderid = str(now.year) + str(now.month) + str(now.day) + str(now.hour) + str(now.minute) + str(
+                now.second) + "u%s" % (user.pk)
+            address = "%s %s %s" % (userprofile.recipients, userprofile.tel, userprofile.address)
+            order = Order(user=user, orderid=orderid, time=now, address=address)
+            order.save()
+            for i in cart:
+                selling = Selling(order=order, goodsku=i.goodsku, count=i.count, price=i.goodsku.new_price)
+                selling.save()  # 保存在销售记录里
+                goodsku = GoodSku.objects.get(id=i.goodsku.pk)
+                goodsku.sales += i.count  # 更新sku的销量
+                goodsku.num -= i.count  # 更新sku的库存数量
+                goodsku.save()
+                i.delete()  # 从购物车中删除
+            return render(request, 'checkout_message.html', locals())
+        else:
+            return redirect('/cart/')
 
 
-@login_required(login_url='/login/')  # 需要登录
 # 用户后台,管理地址,浏览记录,购买记录
+@login_required(login_url='/login/')  # 需要登录
 def myuser(request):
     user = get_user(request)
     if request.method == 'GET':
         userprofile = UserProfile.objects.get(user=user)
+        # 获得浏览记录
+        view_history = [int(x) for x in userprofile.view_history.split(',')]
+        view_history.reverse()
         addressform = forms.AddressForm(instance=userprofile)
         order = Order.objects.filter(user=user)
         selling = Selling.objects.filter(order=order)
-
-        # order = []  # 订单号列表
-        # orderlist = []  # 订单相关信息列表
-        # for i in selling:
-        #     if i.orderid not in order:
-        #         order.append(i.orderid)
-        # for o in order:
-        #     orderone = []  # 统计一个订单的信息
-        #     total_price = 0
-        #     for i in selling:
-        #         if i.orderid == o:
-        #             i.total_price = i.count * i.price
-        #             total_price += i.count * i.price
+        g_list = getPage(request, order, 5)
         return render(request, 'user.html', locals())
+
     if request.method == 'POST':
+        # 更新收货地址
         addressform = forms.AddressForm(request.POST)
         if addressform.is_valid():
             recipients = addressform.cleaned_data['recipients']
