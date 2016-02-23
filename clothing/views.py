@@ -322,7 +322,7 @@ def products(request):
                 userprofile.save()
         try:
             p = Good.objects.get(pk=pid)  # 查询到商品对象
-            p.view += 1
+            p.view_my += 1
             p.save()
 
         except Good.DoesNotExist:
@@ -345,7 +345,7 @@ def mycart(request):
         cart = Cart.objects.filter(user=request.user, goodsku=goodsku)
         if not cart:
             cart = Cart(user=request.user, goodsku=goodsku, count=num)
-            if cart.count > goodsku.num:
+            if int(cart.count) > goodsku.num:
                 cart.count = cart.goodsku.num
             cart.save()
         else:
@@ -417,7 +417,7 @@ def mycheckout(request):
             orderid = str(now.year) + str(now.month) + str(now.day) + str(now.hour) + str(now.minute) + str(
                 now.second) + "u%s" % (user.pk)
             address = "%s %s %s" % (userprofile.recipients, userprofile.tel, userprofile.address)
-            order = Order(user=user, orderid=orderid, time=now, address=address)
+            order = Order(user=user, orderid=orderid, time_my=now, address=address)
             order.save()
             for i in cart:
                 selling = Selling(order=order, goodsku=i.goodsku, count=i.count, price=i.goodsku.new_price)
@@ -439,8 +439,9 @@ def myuser(request):
     if request.method == 'GET':
         userprofile = UserProfile.objects.get(user=user)
         # 获得浏览记录
-        view_history = [int(x) for x in userprofile.view_history.split(',')]
-        view_history.reverse()
+        if userprofile.view_history:
+            view_history = [int(x) for x in userprofile.view_history.split(',')]
+            view_history.reverse()
         addressform = forms.AddressForm(instance=userprofile)
         order = Order.objects.filter(user=user)
         selling = Selling.objects.filter(order=order)

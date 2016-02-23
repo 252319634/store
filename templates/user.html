@@ -43,9 +43,13 @@
     </form>
     <div>
         <h4>浏览记录:</h4>
+    {% if view_history %}
         {% for pid in view_history %}
             {% history pid %}
         {% endfor %}
+    {% else %}
+        没有浏览任何商品!
+    {% endif %}
     </div>
     <div style="clear: both"></div>
     <div>
